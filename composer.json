@@ -2,7 +2,8 @@
     "name": "seansch/interspire",
     "description": "Interspire API Wrapper for Laravel 5",
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+	"guzzlehttp/guzzle": "~5.2"
     },
     "license": "MIT",
     "authors": [

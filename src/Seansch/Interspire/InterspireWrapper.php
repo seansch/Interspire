@@ -1,7 +1,7 @@
 <?php namespace Seansch\Interspire;
 
 
-class Interspire {
+class InterspireWrapper {
 
     private function postData($xml)
     {
@@ -69,6 +69,10 @@ class Interspire {
         $this->postData($xml);
     }
 
+    /**
+     * @param string $email
+     * @param int $list_id
+     */
     public function isOnList($email, $list_id)
     {
         $xml = '<xmlrequest>
@@ -82,6 +86,7 @@ class Interspire {
 		</details>
 		</xmlrequest>';
 
+        dd($xml);
         $this->postData($xml);
     }
 

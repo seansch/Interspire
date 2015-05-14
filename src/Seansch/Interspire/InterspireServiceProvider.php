@@ -15,9 +15,6 @@ class InterspireServiceProvider extends ServiceProvider {
             __DIR__ . '/../../config/interspire.php' => config_path('interspire.php'),
         ]);
 
-        $this->app->bind('Seansch\Interspire', function(){
-            return new Interspire();
-        });
 	}
 
 	/**
@@ -27,7 +24,9 @@ class InterspireServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+        $this->app->bind('interspire', function(){
+            return new Interspire;
+        });
 	}
 
 }
