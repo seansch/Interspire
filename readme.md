@@ -8,6 +8,7 @@ First, pull in the package through Composer.
 "require": {
     "seansch/interspire": "dev-master"
 }
+
 ```
 
 And then, if using Laravel 5, include the service provider within `app/config/app.php`.
@@ -16,6 +17,7 @@ And then, if using Laravel 5, include the service provider within `app/config/ap
 'providers' => [
     'Seansch\Interspire\InterspireServiceProvider'
 ];
+
 ```
 
 And, for convenience, add a facade alias to this same file at the bottom:
@@ -24,6 +26,13 @@ And, for convenience, add a facade alias to this same file at the bottom:
 'aliases' => [
     'Interspire' => 'Seansch\Interspire\InterspireFacade'
 ];
+
+```
+
+Publish the config file `app/config/interspire.php` and edit with your details
+```php
+php artisan vendor:publish
+
 ```
 
 ## Usage
