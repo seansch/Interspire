@@ -4,6 +4,13 @@ use Illuminate\Support\ServiceProvider;
 
 class InterspireServiceProvider extends ServiceProvider {
 
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = true;
+
 	/**
 	 * Bootstrap the application services.
 	 *
@@ -28,5 +35,14 @@ class InterspireServiceProvider extends ServiceProvider {
             return new Interspire;
         });
 	}
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides() {
+        return array('interspire');
+    }
 
 }
