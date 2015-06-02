@@ -44,22 +44,25 @@ class Interspire {
      */
     public function addSubscriberToList($email, $list_id, array $fields)
     {
-        $custom_fields = $this->getCustomFields($list_id);
-
         $custom_field_xml = '';
-        foreach ($fields as $key => $val) {
-            // Check that the field exists in the contact list and setup its xml
-            if (array_key_exists($key, $custom_fields)) {
-                $custom_field_xml .= '
-                    <item>
-                        <fieldid>'.$custom_fields[$key].'</fieldid>
-                        <value>'.$val.'</value>
-                    </item>
-                ';
-            } else {
-                return $key.": Not a valid field";
-            }
-        }
+ 	
+	if (count($fields)) {
+		$custom_fields = $this->getCustomFields($list_id);
+
+        	foreach ($fields as $key => $val) {
+            		// Check that the field exists in the contact list and setup its xml
+            		if (array_key_exists($key, $custom_fields)) {
+                		$custom_field_xml .= '
+                    		<item>
+                        		<fieldid>'.$custom_fields[$key].'</fieldid>
+                        		<value>'.$val.'</value>
+                    		</item>
+                		';
+            		} else {
+                	return $key.": Not a valid field";
+            		}
+        	}
+	}
 
         $xml = '<xmlrequest>
 		<username>'.config('interspire.user').'</username>
@@ -154,3 +157,4 @@ class Interspire {
         return $custom_fields;
     }
 }
+
