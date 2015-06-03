@@ -46,38 +46,39 @@ class Interspire {
     {
         $custom_field_xml = '';
  	
-	if (count($fields)) {
-		$custom_fields = $this->getCustomFields($list_id);
+        if (count($fields)) {
+            $custom_fields = $this->getCustomFields($list_id);
 
-        	foreach ($fields as $key => $val) {
-            		// Check that the field exists in the contact list and setup its xml
-            		if (array_key_exists($key, $custom_fields)) {
-                		$custom_field_xml .= '
-                    		<item>
-                        		<fieldid>'.$custom_fields[$key].'</fieldid>
-                        		<value>'.$val.'</value>
-                    		</item>
-                		';
-            		} else {
-                	return $key.": Not a valid field";
-            		}
-        	}
-	}
+            foreach ($fields as $key => $val) {
+                // Check that the field exists in the contact list and setup its xml
+                if (array_key_exists($key, $custom_fields)) {
+                    $custom_field_xml .= '
+                        <item>
+                            <fieldid>'.$custom_fields[$key].'</fieldid>
+                            <value>'.$val.'</value>
+                        </item>';
+                } else {
+                    return $key.": Not a valid field";
+                }
+            }
+
+            $custom_field_xml = '<customfields>
+                    '.$custom_field_xml.'
+                </customfields>';
+        }
 
         $xml = '<xmlrequest>
-		<username>'.config('interspire.user').'</username>
-		<usertoken>'.config('interspire.token').'</usertoken>
-		<requesttype>subscribers</requesttype>
-		<requestmethod>AddSubscriberToList</requestmethod>
-		<details>
-		<emailaddress>'.$email.'</emailaddress>
-		<mailinglist>'.$list_id.'</mailinglist>
-		<format>html</format>
-		<confirmed>yes</confirmed>
-		<customfields>
-        '.$custom_field_xml.'
-		</customfields>
-		</details>
+            <username>'.config('interspire.user').'</username>
+            <usertoken>'.config('interspire.token').'</usertoken>
+            <requesttype>subscribers</requesttype>
+            <requestmethod>AddSubscriberToList</requestmethod>
+            <details>
+                <emailaddress>'.$email.'</emailaddress>
+                <mailinglist>'.$list_id.'</mailinglist>
+                <format>html</format>
+                <confirmed>yes</confirmed>
+                '.$custom_field_xml.'
+            </details>
 		</xmlrequest>';
 
         return($this->postData($xml));
@@ -93,14 +94,14 @@ class Interspire {
     public function deleteSubscriber($email, $list_id)
     {
         $xml = '<xmlrequest>
-		<username>'.config('interspire.user').'</username>
-		<usertoken>'.config('interspire.token').'</usertoken>
-		<requesttype>subscribers</requesttype>
-		<requestmethod>DeleteSubscriber</requestmethod>
-		<details>
-		<emailaddress>'.$email.'</emailaddress>
-		<list>'.$list_id.'</list>
-		</details>
+            <username>'.config('interspire.user').'</username>
+            <usertoken>'.config('interspire.token').'</usertoken>
+            <requesttype>subscribers</requesttype>
+            <requestmethod>DeleteSubscriber</requestmethod>
+            <details>
+                <emailaddress>'.$email.'</emailaddress>
+                <list>'.$list_id.'</list>
+            </details>
 		</xmlrequest>';
 
         return($this->postData($xml));
@@ -116,14 +117,14 @@ class Interspire {
     public function isOnList($email, $list_id)
     {
         $xml = '<xmlrequest>
-            <username>'.config('interspire.user').'</username>
-            <usertoken>'.config('interspire.token').'</usertoken>
-            <requesttype>subscribers</requesttype>
-            <requestmethod>IsSubscriberOnList</requestmethod>
-            <details>
-            <emailaddress>'.$email.'</emailaddress>
-            <listids>'.$list_id.'</listids>
-            </details>
+                <username>'.config('interspire.user').'</username>
+                <usertoken>'.config('interspire.token').'</usertoken>
+                <requesttype>subscribers</requesttype>
+                <requestmethod>IsSubscriberOnList</requestmethod>
+                <details>
+                    <emailaddress>'.$email.'</emailaddress>
+                    <listids>'.$list_id.'</listids>
+                </details>
             </xmlrequest>';
 
         return($this->postData($xml));
@@ -138,13 +139,13 @@ class Interspire {
     public function getCustomFields($list_id)
     {
         $xml = '<xmlrequest>
-            <username>'.config('interspire.user').'</username>
-            <usertoken>'.config('interspire.token').'</usertoken>
-            <requesttype>lists</requesttype>
-            <requestmethod>GetCustomFields</requestmethod>
-            <details>
-            <listids>'.$list_id.'</listids>
-            </details>
+                <username>'.config('interspire.user').'</username>
+                <usertoken>'.config('interspire.token').'</usertoken>
+                <requesttype>lists</requesttype>
+                <requestmethod>GetCustomFields</requestmethod>
+                <details>
+                    <listids>'.$list_id.'</listids>
+                </details>
             </xmlrequest>';
 
         $response = $this->client->post('', ['body' => $xml])->xml();
