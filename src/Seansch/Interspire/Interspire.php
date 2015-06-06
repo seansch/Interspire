@@ -157,5 +157,96 @@ class Interspire {
 
         return $custom_fields;
     }
-}
 
+    /**
+     * Retrieve subscribers information as a SimpleXMLElement object
+     *
+     * @param $email
+     * @param $list_id
+     * @return \SimpleXMLElement
+     */
+    public function getSubscriber($email, $list_id)
+    {
+        $xml = '<xmlrequest>
+                <username>'.config('interspire.user').'</username>
+                <usertoken>'.config('interspire.token').'</usertoken>
+                <requesttype>subscribers</requesttype>
+                <requestmethod>GetSubscribers</requestmethod>
+                <details>
+                    <searchinfo>
+                        <List>'.$list_id.'</List>
+                        <Email>'.$email.'</Email>
+                    </searchinfo>
+                </details>
+            </xmlrequest>';
+
+        $response = $this->client->post('', ['body' => $xml])->xml();
+
+        return $response;
+    }
+
+    /**
+     * Retrieves a subscribers ID
+     *
+     * @param $email
+     * @param $list_id
+     * @return string
+     */
+    public function getSubscriberId($email, $list_id)
+    {
+        $subscriber = $this->getSubscriber($email, $list_id);
+        $id = (string) $subscriber->data->subscriberlist->item->subscriberid;
+
+        return $id;
+    }
+
+    /**
+     * Unsubscribe a subscriber
+     *
+     * @param $email
+     * @param $list_id
+     * @return bool
+     */
+    public function unsubscribeSubscriber($email, $list_id)
+    {
+        $subscriberid = $this->getSubscriberId($email, $list_id);
+
+        $xml = '<xmlrequest>
+                <username>'.config('interspire.user').'</username>
+                <usertoken>'.config('interspire.token').'</usertoken>
+                <requesttype>subscribers</requesttype>
+                <requestmethod>UnsubscribeSubscriber</requestmethod>
+                <details>
+                    <emailaddress>'.$email.'</emailaddress>
+                    <listid>'.$list_id.'</listid>
+                    <subscriberid>'.$subscriberid.'</subscriberid>
+                </details>
+            </xmlrequest>';
+
+
+        return($this->postData($xml));
+    }
+
+    /**
+     * Reactivate a subscriber
+     *
+     * @param $email
+     * @param $list_id
+     * @return bool
+     */
+    public function activateSubscriber($email, $list_id)
+    {
+        $xml = '<xmlrequest>
+                <username>'.config('interspire.user').'</username>
+                <usertoken>'.config('interspire.token').'</usertoken>
+                <requesttype>subscribers</requesttype>
+                <requestmethod>ActivateSubscriber</requestmethod>
+                <details>
+                    <emailaddress>'.$email.'</emailaddress>
+                    <listid>'.$list_id.'</listid>
+                </details>
+            </xmlrequest>';
+
+        return($this->postData($xml));
+    }
+}
