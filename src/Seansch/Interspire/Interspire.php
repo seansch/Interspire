@@ -106,6 +106,32 @@ class Interspire {
 
         return($this->postData($xml));
     }
+    
+    /**
+     * Retrieve lists information
+     *
+     * @return \SimpleXMLElement
+     */
+    public function getLists()
+    {
+        $xml = '<xmlrequest>
+                <username>'.config('interspire.user').'</username>
+                <usertoken>'.config('interspire.token').'</usertoken>
+                <requesttype>user</requesttype>
+                <requestmethod>GetLists</requestmethod>
+                <details>
+                </details>
+            </xmlrequest>';
+
+        $response = $this->client->post('', ['body' => $xml])->xml();
+
+        $lists = [];
+        foreach ($response->data->item as $line) {
+            $lists[(int)$line->listid] = (string)$line->name;
+        }
+
+        return $lists;
+    }
 
     /**
      * Checks if an email is on a specified list
