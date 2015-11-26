@@ -4,7 +4,7 @@ use GuzzleHttp;
 
 class Interspire {
 
-    private $client;
+    protected $client;
 
     public function __construct()
     {
