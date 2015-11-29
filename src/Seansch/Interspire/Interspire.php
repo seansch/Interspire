@@ -22,7 +22,7 @@ class Interspire {
      * @param $xml
      * @return bool
      */
-    private function postData($xml)
+    protected function postData($xml)
     {
         $response = $this->client->post('', ['body' => $xml])->xml();
         if ($response->status == "SUCCESS") {
