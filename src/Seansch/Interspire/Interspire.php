@@ -4,7 +4,7 @@ use GuzzleHttp;
 
 class Interspire {
 
-    private $client;
+    protected $client;
 
     public function __construct()
     {
@@ -22,7 +22,7 @@ class Interspire {
      * @param $xml
      * @return bool
      */
-    private function postData($xml)
+    protected function postData($xml)
     {
         $response = $this->client->post('', ['body' => $xml])->xml();
         if ($response->status == "SUCCESS") {
@@ -105,6 +105,32 @@ class Interspire {
 		</xmlrequest>';
 
         return($this->postData($xml));
+    }
+    
+    /**
+     * Retrieve lists information
+     *
+     * @return \SimpleXMLElement
+     */
+    public function getLists()
+    {
+        $xml = '<xmlrequest>
+                <username>'.config('interspire.user').'</username>
+                <usertoken>'.config('interspire.token').'</usertoken>
+                <requesttype>user</requesttype>
+                <requestmethod>GetLists</requestmethod>
+                <details>
+                </details>
+            </xmlrequest>';
+
+        $response = $this->client->post('', ['body' => $xml])->xml();
+
+        $lists = [];
+        foreach ($response->data->item as $line) {
+            $lists[(int)$line->listid] = (string)$line->name;
+        }
+
+        return $lists;
     }
 
     /**
