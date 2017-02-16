@@ -1,4 +1,6 @@
-<?php namespace Seansch\Interspire;
+<?php
+
+namespace Seansch\Interspire;
 
 use GuzzleHttp;
 
@@ -9,7 +11,7 @@ class Interspire {
     public function __construct()
     {
         $this->client = new GuzzleHttp\Client([
-            'base_url' => [config('interspire.url'), []],
+            'base_uri' => config('interspire.url'),
             'defaults' => [
                 'headers' => ['content-type' => 'text/xml']
             ]
@@ -24,12 +26,14 @@ class Interspire {
      */
     protected function postData($xml)
     {
-        $response = $this->client->post('', ['body' => $xml])->xml();
+        $response = $this->client->post('', ['body' => $xml]);
+        $response = simplexml_load_string($response->getBody());
+
         if ($response->status == "SUCCESS") {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -45,7 +49,7 @@ class Interspire {
     public function addSubscriberToList($email, $list_id, array $fields)
     {
         $custom_field_xml = '';
- 	
+
         if (count($fields)) {
             $custom_fields = $this->getCustomFields($list_id);
 
@@ -106,11 +110,11 @@ class Interspire {
 
         return($this->postData($xml));
     }
-    
+
     /**
      * Retrieve lists information
      *
-     * @return \SimpleXMLElement
+     * @return array
      */
     public function getLists()
     {
@@ -123,7 +127,8 @@ class Interspire {
                 </details>
             </xmlrequest>';
 
-        $response = $this->client->post('', ['body' => $xml])->xml();
+        $response = $this->client->post('', ['body' => $xml]);
+        $response = simplexml_load_string($response->getBody());
 
         $lists = [];
         foreach ($response->data->item as $line) {
@@ -174,7 +179,8 @@ class Interspire {
                 </details>
             </xmlrequest>';
 
-        $response = $this->client->post('', ['body' => $xml])->xml();
+        $response = $this->client->post('', ['body' => $xml]);
+        $response = simplexml_load_string($response->getBody());
 
         $custom_fields = [];
         foreach ($response->data->item as $line) {
@@ -206,7 +212,8 @@ class Interspire {
                 </details>
             </xmlrequest>';
 
-        $response = $this->client->post('', ['body' => $xml])->xml();
+        $response = $this->client->post('', ['body' => $xml]);
+        $response = simplexml_load_string($response->getBody());
 
         return $response;
     }
